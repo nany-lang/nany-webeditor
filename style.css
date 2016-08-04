@@ -22,18 +22,22 @@ body
 	font-size: 75%;
 }
 
-#sample-list, #sample-list-button
+#sample-list
 {
-	float: right;
-	width: 20%;
+	border: 1px;
+	padding: 2px;
+	float: left;
+	width: 12%;
 	max-width: 15em;
+	margin-left: 2px;;
 }
 
 #editors
 {
-	width: 90%;
+	float: right;
+	width: 85%;
 	text-align: left;
-	margin: 0 auto; /* centered */
+	margin-right: 5px;
 }
 
 #editor-tabs

@@ -32,6 +32,8 @@
 	<div id="maintitle" class="title"><h1>Nany Web Editor</h1></div>
 	<div id="subtitle" class="title"><h1>Discover Nany now !</h1></div>
 
+	<div id="sample-list" class="ui-widget ui-widget-content ui-corner-all"><ul></ul></div>
+
 	<div id="editors">
 	  <button id="new-file">+</button>
 	  <div id="editor-tabs">
@@ -41,11 +43,9 @@
 		</ul>
 
 		<form style="position: relative;">
-		  <select id="sample-list" onchange="document.location = this.options[this.selectedIndex].value;">
+<!--		  <select id="sample-list" onchange="document.location = this.options[this.selectedIndex].value;">
 			<option value="#" selected="selected" disabled>Samples...</option>
-			<!--<option value="samples/helloworld.ny">Hello world</option>
-			<option value="samples/unicode.ny">Unicode</option>-->
-		  </select>
+		  </select> -->
 
 		  <textarea id="editor"></textarea>
 		</form>
@@ -142,36 +142,45 @@
 		 $files = scandir($sampleDir);
 	  ?>
 
+	  // Sample list is a jsTree
 	  // Fill the sample list using the contents of the "samples/" folder retrieved by PHP
 	  $(function() {
 		var sampleIndex = 1;
-		var entryTemplate = "<option value='samples/#{href}'>#{label}</option>";
-		//var entryTemplate = "<li><a href='#{href}'>#{label}</a></li>";
+		//var entryTemplate = "<option value='samples/#{href}'>#{label}</option>";
+		var entryTemplate = "<li id='#{href}'><a href='#{href}'>#{label}</a></li>";
 		var fileList = <?php echo '["' . implode('", "', $files) . '"]' ?>;
 		$.each(fileList, function(i, item) {
 			if (item !== "." && item !== "..") {
 				var entry = $(entryTemplate.replace(/#\{href\}/g, item).replace(/#\{label\}/g, item.replace(/.ny/, "")));
-				$("#sample-list").append(entry);
+				$("#sample-list").find("ul").append(entry);
+				//var $fileHolder = $("<div></div>");
+				//$fileHolder.attr("fileName", item).click(function() {
+				//	loadInEditor("samples/" + item);
+				//}).html(item).appendTo("#sample-list");
 			}
 		});
-		// Register the sample-list as a jQuery drop-down menu
-		$("#sample-list").selectmenu();
+		// Register the sample-list as a jsTree and add a selection changed listener
+	  $("#sample-list").jstree({
+		"core": {
+			"themes": {
+				"name": "default-dark"
+			},
+			"multiple": false
+		}
+	  }).bind("select_node.jstree", function(e, data) {
+			loadInEditor("samples/" + data.node.id);
+		});
 	  });
 
-	  // When a new sample is selected, update the CodeMirror editor
-	  $("#sample-list").on("selectmenuselect", function(event, ui) {
-		var selectedIndex = this.selectedIndex;
-		var sampleList = $("#sample-list");
-		if (selectedIndex > 0) {
-			$.ajax({
-				url : document.getElementById("sample-list").options[selectedIndex].value,
-				dataType: "text",
-				success : function (data) {
-					editor.getDoc().setValue(data);
-				}
-			});
-		}
-	  });
+	  function loadInEditor(filePath) {
+		$.ajax({
+			url : filePath,
+			dataType: "text",
+			success : function (data) {
+				editor.getDoc().setValue(data);
+			}
+		});
+	  }
 	</script>
 
   </body>
