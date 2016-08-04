@@ -20,7 +20,7 @@ The Nany Web Editor is under the [MPL-2.0 license](http://nany.io/en/license/) (
 
 Technology
 ----------
-The Web Viewer is written fully in HTML/CSS/JS and relies on several open-source libraries among which :
+The Web Viewer is written using HTML/PHP/CSS/JS and relies on several open-source libraries among which :
 * [CodeMirror](http://codemirror.net)
 * [jsTree](https://www.jstree.com/)
 * [jQuery](https://jquery.com/) and [jQuery UI](https://jqueryui.com/)

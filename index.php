@@ -43,8 +43,8 @@
 		<form style="position: relative;">
 		  <select id="sample-list" onchange="document.location = this.options[this.selectedIndex].value;">
 			<option value="#" selected="selected" disabled>Samples...</option>
-			<option value="samples/helloworld.ny">Hello world</option>
-			<option value="samples/unicode.ny">Unicode</option>
+			<!--<option value="samples/helloworld.ny">Hello world</option>
+			<option value="samples/unicode.ny">Unicode</option>-->
 		  </select>
 
 		  <textarea id="editor"></textarea>
@@ -127,6 +127,7 @@
 			tabs.tabs("refresh");
 		});
 
+		// Alt-BACK also closes the current tab
 		tabs.on("keyup", function(event) {
 			if (event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE) {
 				var panelId = tabs.find(".ui-tabs-active").remove().attr("aria-controls");
@@ -136,18 +137,34 @@
 		});
 	  });
 
-	  // Register the sample-list as a jQuery drop-down menu
+	  <?php
+		 $sampleDir = "./samples";
+		 $files = scandir($sampleDir);
+	  ?>
+
+	  // Fill the sample list using the contents of the "samples/" folder retrieved by PHP
 	  $(function() {
+		var sampleIndex = 1;
+		var entryTemplate = "<option value='samples/#{href}'>#{label}</option>";
+		//var entryTemplate = "<li><a href='#{href}'>#{label}</a></li>";
+		var fileList = <?php echo '["' . implode('", "', $files) . '"]' ?>;
+		$.each(fileList, function(i, item) {
+			if (item !== "." && item !== "..") {
+				var entry = $(entryTemplate.replace(/#\{href\}/g, item).replace(/#\{label\}/g, item.replace(/.ny/, "")));
+				$("#sample-list").append(entry);
+			}
+		});
+		// Register the sample-list as a jQuery drop-down menu
 		$("#sample-list").selectmenu();
 	  });
 
 	  // When a new sample is selected, update the CodeMirror editor
 	  $("#sample-list").on("selectmenuselect", function(event, ui) {
 		var selectedIndex = this.selectedIndex;
-		var sampleList = document.getElementById("sample-list");
+		var sampleList = $("#sample-list");
 		if (selectedIndex > 0) {
 			$.ajax({
-				url : sampleList.options[selectedIndex].value,
+				url : document.getElementById("sample-list").options[selectedIndex].value,
 				dataType: "text",
 				success : function (data) {
 					editor.getDoc().setValue(data);
