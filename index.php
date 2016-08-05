@@ -38,17 +38,21 @@
 	  <button id="new-file">+</button>
 	  <div id="editor-tabs">
 		<ul>
-		  <li class="editor-tab"><a href="#tab-1">New</a></li>
+		  <li class="editor-tab"><a href="#tab1">New</a></li>
 		</ul>
 
-		<form>
-		  <textarea id="editor"></textarea>
+		<form id="tab1">
+		  <textarea id="editor1"></textarea>
 		</form>
 	  </div>
+	</div>
 
-	  <script>
-		// Create the CodeMirror editor
-		var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+	<!-- UI -->
+	<script>
+	  // Create a CodeMirror editor with given ID
+	  function createEditor(id) {
+		var textArea = document.getElementById(id);
+		var cmEditor = CodeMirror.fromTextArea(textArea, {
 			lineNumbers: true,
 			mode: "nany",
 			theme : "nany-light",
@@ -58,18 +62,16 @@
 			foldGutter: true,
 			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 		});
+		textArea.style.display = "none";
+		return cmEditor;
+	  }
 
-		var editors = new Array;
-		editors[0] = editor;
-	  </script>
+	  var editors = new Array;
+	  editors[1] = createEditor("editor1");
 
-	</div>
-
-	<!-- UI -->
-	<script>
 	  $(function() {
 		var tabTitle = "New";
-		var tabContent = "<form><textarea id='editor#{index}'></textarea></form>";
+		var tabContent = "<form id='tab#{index}'><textarea id='editor#{index}'></textarea></form>";
 		var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
 		var tabCounter = 2;
 
@@ -77,24 +79,24 @@
 		var tabs = $("#editor-tabs").tabs({
 			// On select :
 			activate: function(event, ui) {
-				editor = editors[ui.newTab.index()];
-				editor.refresh();
+				/*var oldEditor = document.getElementById("editor" + (ui.oldTab.index() + 1));
+				oldEditor.nextSibling.style.display = "none";
+				var newEditor = document.getElementById("editor" + (ui.newTab.index() + 1));
+				newEditor.nextSibling.style.display = "block";*/
 			}
 		});
 
 		// Add a new tab
 		function addTab() {
-			var label = "New (" + tabCounter + ")",
-				id = "tab-" + tabCounter,
-				li = $(tabTemplate.replace(/#\{href\}/g, "#" + id).replace(/#\{label\}/g, label)),
-			tabContentHtml = tabContent.replace(/#\{index\}/, tabCounter);
+			var label = "New (" + tabCounter + ")";
+			var li = $(tabTemplate.replace(/#\{href\}/g, "#tab" + tabCounter).replace(/#\{label\}/g, label));
+			tabContentHtml = tabContent.replace(/#\{index\}/g, tabCounter);
 
-	  tabs.find(".ui-tabs-nav").append(li);
-			tabs.find("form").append("<textarea id='editor" + tabCounter + "'></textarea>");
+			tabs.find(".ui-tabs-nav").append(li);
 			tabs.append(tabContentHtml);
-			editors[tabCounter] = CodeMirror.fromTextArea(document.getElementById("editor" + tabCounter));
-			tabs.select(tabCounter);
+			//tabs.select(tabCounter - 1);
 			tabs.tabs("refresh");
+			editors[tabCounter] = createEditor("editor" + tabCounter);
 			tabCounter++;
 		}
 
@@ -138,7 +140,7 @@
 				$("#sample-list").find("ul").append(entry);
 			}
 		});
-		// Register the sample-list as a jsTree and add a selection changed listener
+	  // Register the sample-list as a jsTree and add a selection changed listener
 	  $("#sample-list").jstree({
 		"core": {
 			"themes": {
@@ -148,16 +150,24 @@
 		}
 	  }).bind("select_node.jstree", function(e, data) {
 			loadFileInEditor("samples/" + data.node.id);
-			$("ul > .ui-tabs-active").text(data.node.id);
+			$("ul > .ui-tabs-active > a").text(data.node.id);
 		});
 	  });
 
+	  function activeEditor() {
+		return editors[activeTabIndex() + 1];
+	  }
+	  
+	  function activeTabIndex() {
+		return $("#editor-tabs").tabs("option", "active");
+	  }
+	  
 	  function activeTabID() {
 		return $("ul > .ui-tabs-active").attr("aria-controls");
 	  }
 	  
 	  function loadTextInEditor(text) {
-		  editor.getDoc().setValue(text);
+		  activeEditor().getDoc().setValue(text);
 	  }
 
 	  function loadFileInEditor(filePath) {

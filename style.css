@@ -44,6 +44,16 @@ body
 	margin-right: 10px;
 }
 
+textarea
+{
+	display: none;
+}
+
+.ui-tabs .ui-tabs-panel
+{
+	padding: 5px;
+}
+
 #editor-tabs
 {
 	height: 100%;
