@@ -5,10 +5,10 @@
 	<meta charset="utf-8">
 	<!-- Stylesheets -->
 	<link href="lib/jquery-ui/jquery-ui.min.css" rel="stylesheet">
-	<link href="lib/jstree-themes/default-dark/style.min.css" rel="stylesheet">
+	<link href="lib/jstree-themes/default/style.min.css" rel="stylesheet">
 	<link href="lib/dropzone.min.css" rel="stylesheet">
 	<link href="lib/codemirror/lib/codemirror.css" rel="stylesheet">
-	<link href="lib/codemirror/theme/bespin.css" rel="stylesheet">
+	<link href="lib/codemirror/theme/nany-light.css" rel="stylesheet">
 	<link href="lib/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 	<link href="style.css" rel="stylesheet">
 	<!-- UI libraries -->
@@ -39,29 +39,28 @@
 	  <div id="editor-tabs">
 		<ul>
 		  <li class="editor-tab"><a href="#tab-1">New</a></li>
-		  <!--<li class="editor-tab"><a href="#file2">Simple loop</a></li> -->
 		</ul>
 
-		<form style="position: relative;">
-<!--		  <select id="sample-list" onchange="document.location = this.options[this.selectedIndex].value;">
-			<option value="#" selected="selected" disabled>Samples...</option>
-		  </select> -->
-
+		<form>
 		  <textarea id="editor"></textarea>
 		</form>
 	  </div>
 
 	  <script>
+		// Create the CodeMirror editor
 		var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
 			lineNumbers: true,
 			mode: "nany",
-			theme : "bespin",
+			theme : "nany-light",
 			extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
 			matchBrackets: true,
 			showTrailingSpace: true,
 			foldGutter: true,
 			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 		});
+
+		var editors = new Array;
+		editors[0] = editor;
 	  </script>
 
 	</div>
@@ -69,54 +68,38 @@
 	<!-- UI -->
 	<script>
 	  $(function() {
-		var tabTitle = "New",
-			tabContent = $("#editor"),
-			tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>",
-			tabCounter = 2;
+		var tabTitle = "New";
+		var tabContent = "<form><textarea id='editor#{index}'></textarea></form>";
+		var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
+		var tabCounter = 2;
 
-		var tabs = $("#editor-tabs").tabs();
-
-		// Modal dialog init: custom buttons and a "close" callback resetting the form inside
-		var dialog = $("#dialog").dialog({
-			autoOpen: false,
-			modal: true,
-			buttons: {
-				Add: function() {
-					addTab();
-					$(this).dialog("close");
-				},
-				Cancel: function() {
-					$(this).dialog("close");
-				}
-			},
-			close: function() {
-				form[0].reset();
+		// Declare jQuery-UI tabs
+		var tabs = $("#editor-tabs").tabs({
+			// On select :
+			activate: function(event, ui) {
+				editor = editors[ui.newTab.index()];
+				editor.refresh();
 			}
 		});
 
-		// AddTab form: calls addTab function on submit and closes the dialog
-		var form = dialog.find("form").on("submit", function(event) {
-			addTab();
-			dialog.dialog("close");
-			event.preventDefault();
-		});
-
-		// Actual addTab function: adds new tab using the input from the form above
+		// Add a new tab
 		function addTab() {
 			var label = "New (" + tabCounter + ")",
 				id = "tab-" + tabCounter,
 				li = $(tabTemplate.replace(/#\{href\}/g, "#" + id).replace(/#\{label\}/g, label)),
-			tabContentHtml = tabContent.val();
+			tabContentHtml = tabContent.replace(/#\{index\}/, tabCounter);
 
-			tabs.find(".ui-tabs-nav").append(li);
-			tabs.append("<div id='" + id + "'><p>" + tabContentHtml + "</p></div>");
+	  tabs.find(".ui-tabs-nav").append(li);
+			tabs.find("form").append("<textarea id='editor" + tabCounter + "'></textarea>");
+			tabs.append(tabContentHtml);
+			editors[tabCounter] = CodeMirror.fromTextArea(document.getElementById("editor" + tabCounter));
+			tabs.select(tabCounter);
 			tabs.tabs("refresh");
 			tabCounter++;
 		}
 
-		// + button: just opens the dialog
+		// + button: create a new tab
 		$("#new-file").button().on("click", function() {
-			//dialog.dialog("open");
 			addTab();
 		});
 
@@ -153,31 +136,36 @@
 			if (item !== "." && item !== "..") {
 				var entry = $(entryTemplate.replace(/#\{href\}/g, item).replace(/#\{label\}/g, item.replace(/.ny/, "")));
 				$("#sample-list").find("ul").append(entry);
-				//var $fileHolder = $("<div></div>");
-				//$fileHolder.attr("fileName", item).click(function() {
-				//	loadInEditor("samples/" + item);
-				//}).html(item).appendTo("#sample-list");
 			}
 		});
 		// Register the sample-list as a jsTree and add a selection changed listener
 	  $("#sample-list").jstree({
 		"core": {
 			"themes": {
-				"name": "default-dark"
+				"name": "default"
 			},
 			"multiple": false
 		}
 	  }).bind("select_node.jstree", function(e, data) {
-			loadInEditor("samples/" + data.node.id);
+			loadFileInEditor("samples/" + data.node.id);
+			$("ul > .ui-tabs-active").text(data.node.id);
 		});
 	  });
 
-	  function loadInEditor(filePath) {
+	  function activeTabID() {
+		return $("ul > .ui-tabs-active").attr("aria-controls");
+	  }
+	  
+	  function loadTextInEditor(text) {
+		  editor.getDoc().setValue(text);
+	  }
+
+	  function loadFileInEditor(filePath) {
 		$.ajax({
 			url : filePath,
 			dataType: "text",
 			success : function (data) {
-				editor.getDoc().setValue(data);
+				loadTextInEditor(data);
 			}
 		});
 	  }
