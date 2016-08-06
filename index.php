@@ -132,7 +132,7 @@
 	  $(function() {
 		var sampleIndex = 1;
 		//var entryTemplate = "<option value='samples/#{href}'>#{label}</option>";
-		var entryTemplate = "<li id='#{href}'><a href='#{href}'>#{label}</a></li>";
+		var entryTemplate = "<li id='#{href}' title='#{label}'><a href='#{href}'>#{label}</a></li>";
 		var fileList = <?php echo '["' . implode('", "', $files) . '"]' ?>;
 		$.each(fileList, function(i, item) {
 			if (item !== "." && item !== "..") {
@@ -140,32 +140,35 @@
 				$("#sample-list").find("ul").append(entry);
 			}
 		});
-	  // Register the sample-list as a jsTree and add a selection changed listener
-	  $("#sample-list").jstree({
-		"core": {
-			"themes": {
-				"name": "default"
-			},
-			"multiple": false
-		}
-	  }).bind("select_node.jstree", function(e, data) {
+
+		$(document).tooltip();
+		// Register the sample-list as a jsTree and add a selection changed listener
+		$("#sample-list").jstree({
+			"core": {
+				"themes": {
+					"name": "default"
+				},
+				"multiple": false
+			}
+		}).bind("select_node.jstree", function(e, data) {
 			loadFileInEditor("samples/" + data.node.id);
 			$("ul > .ui-tabs-active > a").text(data.node.id);
+		// Set up tooltips
 		});
 	  });
 
 	  function activeEditor() {
 		return editors[activeTabIndex() + 1];
 	  }
-	  
+
 	  function activeTabIndex() {
 		return $("#editor-tabs").tabs("option", "active");
 	  }
-	  
+
 	  function activeTabID() {
 		return $("ul > .ui-tabs-active").attr("aria-controls");
 	  }
-	  
+
 	  function loadTextInEditor(text) {
 		  activeEditor().getDoc().setValue(text);
 	  }

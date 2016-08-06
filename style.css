@@ -67,6 +67,15 @@ textarea
 	height: 100%;
 }
 
+.ui-tooltip
+{
+	opacity: 0.8;
+	display: inline-block;
+	border-radius: 6px;
+	padding: 2px;
+	margin: 2px;
+}
+
 .CodeMirror {
 	min-height: 600px;
 }
