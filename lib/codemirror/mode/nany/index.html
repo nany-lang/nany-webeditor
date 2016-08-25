@@ -1,0 +1,67 @@
+<!doctype html>
+
+<title>CodeMirror: Nany mode</title>
+<meta charset="utf-8"/>
+<link rel=stylesheet href="../../doc/docs.css">
+
+<link rel="stylesheet" href="../../lib/codemirror.css">
+<script src="../../lib/codemirror.js"></script>
+<script src="../../addon/edit/matchbrackets.js"></script>
+<script src="../../addon/comment/continuecomment.js"></script>
+<script src="../../addon/comment/comment.js"></script>
+<script src="nany.js"></script>
+<style type="text/css">.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
+<div id=nav>
+  <a href="http://codemirror.net"><h1>CodeMirror</h1><img id=logo src="../../doc/logo.png"></a>
+
+  <ul>
+    <li><a href="../../index.html">Home</a>
+    <li><a href="../../doc/manual.html">Manual</a>
+    <li><a href="https://github.com/codemirror/codemirror">Code</a>
+  </ul>
+  <ul>
+    <li><a href="../index.html">Language modes</a>
+    <li><a class=active href="#">Nany</a>
+  </ul>
+</div>
+
+<article>
+<h2>Nany mode</h2>
+
+
+<div><textarea id="code" name="code">
+func main
+{
+    var circle = new class {
+        var radius = 2.0;
+        var diameter -> { get: radius * 2.0, set: radius = value / 2.0 };
+
+        var circumference -> {
+            get: 2.0 * std.math.pi * radius,
+            set: diameter = value / std.math.pi };
+    };
+
+    console << "radius = " << circle.radius << " circumference: " << circle.circumference << "\n\n";
+
+    circle.circumference = 42.0;
+    console << "new circumference: " << circle.circumference << "\n";
+    console << "new radius = " << circle.radius << "\n";
+}
+</textarea></div>
+
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        matchBrackets: true,
+        continueComments: "Enter",
+        extraKeys: {"Ctrl-Q": "toggleComment"}
+      });
+    </script>
+
+    <p>
+      Nany mode is currently under development and may be heavily flawed.
+	  Bug notices and pull requests are welcome.
+    </p>
+
+    <p><strong>MIME types defined:</strong> <code>text/nany</code>, <code>application/nany</code>.</p>
+</article>

@@ -36,7 +36,22 @@ body
 	margin: 0 auto; /* centered */
 }
 
+#editor-tabs
+{
+	margin: 0;
+	padding: 2px 2px 4px 2px;
+}
+
 #editor
 {
 	width: 100%;
+}
+
+
+/* CodeMirror trailing whitespaces */
+.cm-trailingspace {
+	background-color: red;
+/*    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
+    background-position: bottom left;
+    background-repeat: repeat-x;*/
 }
