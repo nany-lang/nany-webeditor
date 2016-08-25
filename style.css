@@ -1,0 +1,42 @@
+body
+{
+	margin: 0px;
+	background-color: #eeeeee;
+	overflow: hidden;
+}
+
+.title
+{
+	text-align: center;
+	text-shadow: 1px 1px #888888;
+	color: #b1d4e2;
+	margin: 2px;
+}
+
+#maintitle
+{
+}
+
+#subtitle
+{
+	font-size: 75%;
+}
+
+#sample-list, #sample-list-button
+{
+	float: right;
+	width: 20%;
+	max-width: 15em;
+}
+
+#editors
+{
+	width: 90%;
+	text-align: left;
+	margin: 0 auto; /* centered */
+}
+
+#editor
+{
+	width: 100%;
+}
