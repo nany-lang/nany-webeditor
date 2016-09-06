@@ -7,35 +7,41 @@ body
 
 .title
 {
+	font-family: Helvetica, sans-serif;
 	text-align: center;
 	text-shadow: 1px 1px #888888;
 	color: #b1d4e2;
-	margin: 2px;
 }
 
-#maintitle
+#maintitle h1
 {
+	margin: 2px;
 }
 
 #subtitle
 {
-	font-size: 75%;
+	font-size: 70%;
 }
+
+#subtitle h1
+{
+	font-weight: 200;
+	margin: 2px;
+}
+
 
 #sample-list
 {
 	float: left;
 	overflow: hidden; /* Do not allow long file names to overflow */
-	width: 12%;
-	max-width: 15em;
+	width: 13%;
 	border: 1px;
 	padding: 2px;
-	margin-left: 2px;;
+	margin-left: 2px;
 }
 
 #editors
 {
-	resize: vertical;
 	overflow: auto;
 	float: right;
 	width: 85%;
@@ -51,6 +57,7 @@ textarea
 
 .ui-tabs .ui-tabs-panel
 {
+	resize: vertical;
 	padding: 5px;
 }
 
