@@ -61,7 +61,7 @@
 			foldGutter: true,
 			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 		});
-		textArea.style.display = "none";
+		//textArea.style.display = "none";
 		return cmEditor;
 	  }
 
@@ -102,18 +102,22 @@
 
 		// Close icon: removing the tab on click
 		tabs.on("click", "span.ui-icon-close", function() {
+			var panelIndex = activeTabIndex();
 			var panelId = $(this).closest("li").remove().attr("aria-controls");
 			$("#" + panelId).remove();
+			editors.splice(panelIndex, 1);
 			tabs.tabs("refresh");
 		});
 
 		// Alt-BACK also closes the current tab
 		tabs.on("keyup", function(event) {
 			if (event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE) {
+				var panelIndex = activeTabIndex();
 				var panelId = activeTabID();
 				if ("tab1" !== panelId) {
 					tabs.find(".ui-tabs-active").remove();
 					$("#" + panelId).remove();
+					editors.splice(panelIndex, 1);
 					tabs.tabs("refresh");
 				}
 			}
