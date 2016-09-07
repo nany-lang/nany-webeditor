@@ -29,8 +29,7 @@
   </head>
 
   <body>
-	<div id="maintitle" class="title"><h1>Nany Web Editor</h1></div>
-	<div id="subtitle" class="title"><h1>Discover Nany now !</h1></div>
+	<div id="banner" class="title"><h1>Nany Web Editor</h1></div>
 
 	<div id="sample-list" class="ui-widget ui-widget-content ui-corner-all"><ul></ul></div>
 
@@ -79,10 +78,6 @@
 		var tabs = $("#editor-tabs").tabs({
 			// On select :
 			activate: function(event, ui) {
-				/*var oldEditor = document.getElementById("editor" + (ui.oldTab.index() + 1));
-				oldEditor.nextSibling.style.display = "none";
-				var newEditor = document.getElementById("editor" + (ui.newTab.index() + 1));
-				newEditor.nextSibling.style.display = "block";*/
 			}
 		});
 
@@ -115,9 +110,12 @@
 		// Alt-BACK also closes the current tab
 		tabs.on("keyup", function(event) {
 			if (event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE) {
-				var panelId = tabs.find(".ui-tabs-active").remove().attr("aria-controls");
-				$("#" + panelId).remove();
-				tabs.tabs("refresh");
+				var panelId = activeTabID();
+				if ("tab1" !== panelId) {
+					tabs.find(".ui-tabs-active").remove();
+					$("#" + panelId).remove();
+					tabs.tabs("refresh");
+				}
 			}
 		});
 	  });

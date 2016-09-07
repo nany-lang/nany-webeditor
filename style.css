@@ -5,28 +5,20 @@ body
 	overflow: hidden;
 }
 
-.title
+#banner
+{
+	text-align: left;
+	background-color: #cccccc;
+	border-bottom: 2px solid #888888;
+	padding: 6px;
+}
+
+#banner h1
 {
 	font-family: Helvetica, sans-serif;
-	text-align: center;
-	text-shadow: 1px 1px #888888;
-	color: #b1d4e2;
-}
-
-#maintitle h1
-{
-	margin: 2px;
-}
-
-#subtitle
-{
-	font-size: 70%;
-}
-
-#subtitle h1
-{
+	font-size: 1.5em;
 	font-weight: 200;
-	margin: 2px;
+	margin: 0px 15px;
 }
 
 
@@ -37,17 +29,17 @@ body
 	width: 13%;
 	border: 1px;
 	padding: 2px;
-	margin-left: 2px;
+	margin: 5px;
 }
 
 #editors
 {
 	overflow: auto;
-	float: right;
-	width: 85%;
+/*	float: right;*/
+/*	width: 85%;*/
 	min-height: 600px;
 	text-align: left;
-	margin-right: 10px;
+	margin: 5px;
 }
 
 textarea
