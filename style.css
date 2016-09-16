@@ -40,11 +40,6 @@ body
 	margin: 5px;
 }
 
-textarea
-{
-	display: none;
-}
-
 #editor-tabs
 {
 	height: 100%;

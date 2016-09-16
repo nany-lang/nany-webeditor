@@ -61,7 +61,6 @@
 			foldGutter: true,
 			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 		});
-		//textArea.style.display = "none";
 		return cmEditor;
 	  }
 
@@ -78,6 +77,7 @@
 		var tabs = $("#editor-tabs").tabs({
 			// On select :
 			activate: function(event, ui) {
+				activeEditor().refresh();
 			}
 		});
 
@@ -92,6 +92,7 @@
 			//tabs.select(tabCounter - 1);
 			tabs.tabs("refresh");
 			editors[tabCounter] = createEditor("editor" + tabCounter);
+			editors[tabCounter].refresh();
 			tabCounter++;
 		}
 
@@ -172,7 +173,9 @@
 	  }
 
 	  function loadTextInEditor(text) {
-		  activeEditor().getDoc().setValue(text);
+		var editor = activeEditor();
+		editor.getDoc().setValue(text);
+		editor.refresh();
 	  }
 
 	  function loadFileInEditor(filePath) {
