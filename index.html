@@ -47,7 +47,7 @@
 	</div>
 
 	<!-- UI -->
-	<script>
+	<script type="text/javascript">
 	  // Create a CodeMirror editor with given ID
 	  function createEditor(id) {
 		var textArea = document.getElementById(id);
@@ -92,7 +92,7 @@
 			//tabs.select(tabCounter - 1);
 			tabs.tabs("refresh");
 			editors[tabCounter] = createEditor("editor" + tabCounter);
-			tabCounter++;
+			++tabCounter;
 		}
 
 		// + button: create a new tab
@@ -107,6 +107,7 @@
 			$("#" + panelId).remove();
 			editors.splice(panelIndex, 1);
 			tabs.tabs("refresh");
+			--tabCounter;
 		});
 
 		// Alt-BACK also closes the current tab
@@ -119,30 +120,35 @@
 					$("#" + panelId).remove();
 					editors.splice(panelIndex, 1);
 					tabs.tabs("refresh");
+					--tabCounter;
 				}
 			}
 		});
 	  });
 
-	  <?php
-		 $sampleDir = "./samples";
-		 $files = scandir($sampleDir);
-	  ?>
-
 	  // Sample list is a jsTree
-	  // Fill the sample list using the contents of the "samples/" folder retrieved by PHP
+	  // Fill the sample list using the contents of the "samples.jsonp" file
 	  $(function() {
-		var sampleIndex = 1;
-		//var entryTemplate = "<option value='samples/#{href}'>#{label}</option>";
-		var entryTemplate = "<li id='#{href}' title='#{label}'><a href='#{href}'>#{label}</a></li>";
-		var fileList = <?php echo '["' . implode('", "', $files) . '"]' ?>;
-		$.each(fileList, function(i, item) {
-			if (item !== "." && item !== "..") {
-				var entry = $(entryTemplate.replace(/#\{href\}/g, item).replace(/#\{label\}/g, item.replace(/.ny/, "")));
-				$("#sample-list").find("ul").append(entry);
+		// Load the JSONP file, which should trigger the callback
+  		$.ajax({
+			url : "samples.jsonp",
+			dataType: "jsonp",
+			success : function (data) {
 			}
 		});
+	  });
 
+  	  // Callback from the JSONP file with the JSON data as argument
+	  function jsonCallback(jsonData) {
+		var sampleIndex = 1;
+		var entryTemplate = "<li id='#{href}' title='#{label}'><a href='#{href}'>#{label}</a></li>";
+
+		$.each (jsonData.samples, function(i, item) {
+			var entry = $(entryTemplate.replace(/#\{href\}/g, item).replace(/#\{label\}/g, item.replace(/.ny/, "")));
+			$("#sample-list").find("ul").append(entry);
+		});
+
+	  		// Set up tooltips
 		$(document).tooltip();
 		// Register the sample-list as a jsTree and add a selection changed listener
 		$("#sample-list").jstree({
@@ -155,9 +161,8 @@
 		}).bind("select_node.jstree", function(e, data) {
 			loadFileInEditor("samples/" + data.node.id);
 			$("ul > .ui-tabs-active > a").text(data.node.id);
-		// Set up tooltips
 		});
-	  });
+	  }
 
 	  function activeEditor() {
 		return editors[activeTabIndex() + 1];

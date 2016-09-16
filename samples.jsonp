@@ -1,0 +1,15 @@
+jsonCallback({
+  "samples" : [
+	"00-hello-world.ny",
+	"01-fibonacci.ny",
+	"02-var-ref.ny",
+	"03-io-reading-file.ny",
+	"04-io-reading-file-line-by-line.ny",
+	"10-environment-variables.ny",
+	"20-parallel.ny",
+	"80-named-parameters.ny",
+	"81-string-interpolation.ny",
+	"82-properties.ny",
+	"unicode.ny"
+  ]
+});
